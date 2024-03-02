@@ -4,17 +4,17 @@
 
 package frc.robot;
 
-import edu.wpi.first.math.MathUtil;
-import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
-import frc.robot.Constants.OperatorConstants;
-import frc.robot.subsystems.swervedrive.SwerveSubsystem;
-import frc.robot.subsystems.vision.Camera;
-
-import java.io.File;
+import frc.robot.Constants.CommandStatus;
+import frc.robot.commands.ArmCommand;
+import frc.robot.commands.ClimbCommand;
+import frc.robot.commands.ShooterCommand;
+import frc.robot.subsystems.Climb.Climb;
+import frc.robot.subsystems.Shooter.Shooter;
+import frc.robot.subsystems.Arm.Arm;
 
 /**
  * This class is where the bulk of the robot should be declared. Since
@@ -26,28 +26,43 @@ import java.io.File;
  * subsystems, commands, and trigger mappings) should be declared here.
  */
 public class RobotContainer {
-  // The robot's subsystems and commands are defined here...
 
-  private final SwerveSubsystem drivebase = new SwerveSubsystem(new File(Filesystem.getDeployDirectory(), "swerve"));
-  private final Camera cam = new Camera();
+  // The robot's subsystems and commands are defined here...
+  // private final FalconTest FalconTest = new FalconTest();
   // Replace with CommandPS4Controller or CommandJoystick if needed
-  XboxController driverXbox = new XboxController(0);
+  // private final Joystick exampleJoystick = new Joystick(0);
+  private final XboxController exampleXbox = new XboxController(Constants.Controller.xboxId);
+  private final Shooter Shooter = new Shooter();
+  private final Climb Climb = new Climb();
+  private final Arm Arm = new Arm();
 
   /**
    * The container for the robot. Contains subsystems, OI devices, and commands.
    */
   public RobotContainer() {
+    if (CommandStatus.testShooter) {
+      Shooter.setDefaultCommand(
+          new ShooterCommand(Shooter, () -> exampleXbox.getRawAxis(Constants.Shooter.topFalconMotorCanId),
+              () -> exampleXbox.getRawAxis(Constants.Shooter.bottomFalconMotorCanId),
+              () -> exampleXbox.getAButton(), () -> exampleXbox.getBButton(), () -> exampleXbox.getXButton(),
+              () -> exampleXbox.getYButton()));
+    }
+
+    if (CommandStatus.testClimb) {
+      Climb.setDefaultCommand(
+          new ClimbCommand(Climb,
+              () -> exampleXbox.getAButton(), () -> exampleXbox.getBButton()));
+    }
+
+    if (CommandStatus.testArm) {
+      Arm.setDefaultCommand(
+          new ArmCommand(Arm, () -> exampleXbox.getRawAxis(Constants.Shooter.topFalconMotorCanId),
+              () -> exampleXbox.getRawAxis(Constants.Shooter.bottomFalconMotorCanId),
+              () -> exampleXbox.getAButton(), () -> exampleXbox.getBButton()));
+    }
     // Configure the trigger bindings
+
     configureBindings();
-
-    cam.cameraStream();
-
-    Command driveFieldOrientedDirectAngle = drivebase.driveCommand(
-        () -> MathUtil.applyDeadband(driverXbox.getLeftY(), OperatorConstants.LEFT_Y_DEADBAND),
-        () -> MathUtil.applyDeadband(driverXbox.getLeftX(), OperatorConstants.LEFT_X_DEADBAND),
-        () -> driverXbox.getRightX(),
-        () -> driverXbox.getRightY());
-    drivebase.setDefaultCommand(driveFieldOrientedDirectAngle);
   }
 
   /**
@@ -65,6 +80,9 @@ public class RobotContainer {
    * joysticks}.
    */
   private void configureBindings() {
+    // Schedule `exampleMethodCommand` when the Xbox controller's B button is
+    // pressed,
+    // cancelling on release.
   }
 
   /**
@@ -73,6 +91,7 @@ public class RobotContainer {
    * @return the command to run in autonomous
    */
   public Command getAutonomousCommand() {
-    return drivebase.getAutonomousCommand("Choreo Auto");
+    // An example command will be run in autonomous
+    return null;
   }
 }

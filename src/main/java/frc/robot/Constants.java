@@ -4,28 +4,53 @@
 
 package frc.robot;
 
-import com.pathplanner.lib.util.PIDConstants;
-
-/**
- * The Constants class provides a convenient place for teams to hold robot-wide numerical or boolean
- * constants. This class should not be used for any other purpose. All constants should be declared
- * globally (i.e. public static). Do not put anything functional in this class.
- *
- * <p>It is advised to statically import this class (or one of its inner classes) wherever the
- * constants are needed, to reduce verbosity.
- */
 public final class Constants {
-  public static class OperatorConstants {
-    // Joystick Deadband
-    public static final double LEFT_X_DEADBAND = 0.1;
-    public static final double LEFT_Y_DEADBAND = 0.1;
-    public static final double RIGHT_X_DEADBAND = 0.1;
-    public static final double TURN_CONSTANT = 6;
+  public static class Controller {
+    public static final int xboxId = 0;
+    public static final int shooterXboxLeftAxisId = 1;
+    public static final int shooterXboxRightAxisId = 5;
   }
 
-  public static final class AutonConstants {
+  public static class CommandStatus {
+    public static final boolean testShooter = false;
+    public static final boolean testClimb = false;
+    public static final boolean testArm = false;
+  }
 
-    public static final PIDConstants TRANSLATION_PID = new PIDConstants(0.7, 0, 0);
-    public static final PIDConstants ANGLE_PID = new PIDConstants(0.4, 0, 0.01);
+  public static class Shooter {
+    public static final int topFalconMotorCanId = 1;
+    public static final int bottomFalconMotorCanId = 4;
+    public static final int sparkMaxCanId = 9;
+
+    public static final double falconSpeedMultiplier = 0.5; // 0.0 - 1.0
+
+    public static final double falconMotorLowOutput = 0.3; // 0.0 - 1.0
+    public static final double falconMotorHighOutput = 0.5; // 0.0 - 1.0
+
+    public static final int photoSwitchSensorChannel = 0;
+
+    public static final double kS = 0.05; // Add 0.05 V output to overcome static friction
+    public static final double kV = 0.12; // A velocity target of 1 rps results in 0.12 V output
+    public static final double kP = 0.11; // An error of 1 rps results in 0.11 V output
+    public static final double kI = 0; // no output for integrated error
+    public static final double kD = 0; // no output for error derivative
+  }
+
+  public static class Climb {
+    public static final int leaderCanId = 5;
+    public static final int followerCanId = 6;
+
+    public static final double loosenSpeed = 0.1;
+    public static final double tightenSpeed = 0.1;
+
+    public static final int rotations = 15;
+  }
+
+  public static class Arm {
+    public static final int leaderCanId = 7;
+    public static final int followerCanId = 8;
+
+    public static final int lowerPosition = 15;
+    public static final int higherPosition = 25;
   }
 }
